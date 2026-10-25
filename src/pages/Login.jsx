@@ -20,7 +20,7 @@ export default function Login(){
       <form onSubmit={submit} className="auth-login-form">
         <AuthField type="email" id="login-email" autoComplete="username" placeholder="아이디 (이메일)" value={email} onChange={setEmail}/>
         <AuthField type="password" id="login-password" autoComplete="current-password" placeholder="비밀번호" value={password} onChange={setPassword}/>
-        <div className="auth-options"><label className="checkbox-line"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>로그인 상태 유지</label><button type="button" className="auth-text-action" onClick={()=>setError('비밀번호 재설정은 백엔드 연결 후 이용할 수 있습니다.')}>비밀번호 찾기</button></div>
+        <div className="auth-options"><label className="checkbox-line"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>로그인 상태 유지</label></div>
         {error&&<div className="auth-error" role="alert">{error}</div>}
         <PrimaryButton type="submit">로그인</PrimaryButton>
       </form>

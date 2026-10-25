@@ -6,6 +6,7 @@ import SignupComplete from './pages/SignupComplete';
 import Main from './pages/Main';
 import ResearchProgress from './pages/ResearchProgress';
 import SourceArchive from './pages/SourceArchive';
+import SourceDetail from './pages/SourceDetail';
 
 export default function App() {
   return <Routes>
@@ -17,6 +18,7 @@ export default function App() {
     <Route path="/research" element={<Main />} />
     <Route path="/research/progress" element={<ResearchProgress />} />
     <Route path="/archive" element={<SourceArchive />} />
+    <Route path="/archive/:id" element={<SourceDetail />} />
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>;
 }

@@ -18,6 +18,6 @@ export default function SignupAccount(){
       {error&&<p className="auth-error" role="alert">{error}</p>}
       <PrimaryButton type="submit">회원가입</PrimaryButton>
     </form>
-    <button type="button" className="auth-back-link" onClick={()=>nav('/signup/terms')}><ArrowLeft size={22}/> 이전으로</button>
+    <button type="button" className="auth-back-link" onClick={()=>nav('/signup/terms')}><ArrowLeft size={16}/> 이전으로</button>
   </div></AuthLayout>;
 }
