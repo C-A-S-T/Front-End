@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
+import { usePresence } from '../utils/presence';
 // 브라우저 기본 <select> 대신 쓰는 공통 드롭다운. 모든 선택 상자를 같은 모양으로 맞춥니다.
 // options: [{ value, label, hint?, badge?, note?, swatch?, disabled? }]
 // variant: 'field'(필터 칸, 왼쪽에 label 표시) | 'pill'(둥근 버튼)
@@ -7,6 +8,7 @@ import { Check, ChevronDown } from 'lucide-react';
 export default function Dropdown({ value, options, onChange, label, placeholder, icon, variant='pill', align='left', menuTitle, ariaLabel, className='' }){
  const [open,setOpen]=useState(false);const [active,setActive]=useState(-1);const ref=useRef(null);
  const selected=options.find(o=>o.value===value);
+ const [menuShown,menuClosing]=usePresence(open);
  useEffect(()=>{if(!open)return;const close=e=>{if(!ref.current?.contains(e.target))setOpen(false)};window.addEventListener('mousedown',close);return()=>window.removeEventListener('mousedown',close)},[open]);
  function toggle(){setActive(Math.max(0,options.findIndex(o=>o.value===value)));setOpen(!open)}
  function pick(o){if(o.disabled)return;onChange(o.value);setOpen(false)}
@@ -25,7 +27,7 @@ export default function Dropdown({ value, options, onChange, label, placeholder,
    <span className="dropdown-value">{selected?.swatch&&<span className={'tiny-square '+selected.swatch}/>}{selected?selected.label:placeholder}{selected?.badge&&<em>{selected.badge}</em>}</span>
    <ChevronDown size={15} className="dropdown-caret"/>
   </button>
-  {open&&<ul className={'dropdown-menu '+align} role="listbox">
+  {menuShown&&<ul className={'dropdown-menu '+align+(menuClosing?' is-closing':'')} role="listbox">
    {menuTitle&&<li className="dropdown-title" role="presentation">{menuTitle}</li>}
    {options.map((o,i)=><li key={String(o.value)} role="presentation"><button type="button" role="option" aria-selected={o.value===value} disabled={o.disabled} className={(o.value===value?'selected ':'')+(i===active?'active':'')} onMouseEnter={()=>setActive(i)} onClick={()=>pick(o)}>
     <span className="dropdown-text"><strong>{o.swatch&&<span className={'tiny-square '+o.swatch}/>}{o.label}{o.badge&&<em>{o.badge}</em>}{o.note&&<i>{o.note}</i>}</strong>{o.hint&&<small>{o.hint}</small>}</span>

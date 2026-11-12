@@ -1,4 +1,4 @@
-import { ARCHIVE_SOURCES, CLAIMS, DEFAULT_TITLE, POLICIES, POLICY_GROUPS, SOURCE_DETAILS, SOURCE_META } from '../data/demo';
+import { ARCHIVE_SOURCES, DEFAULT_TITLE, POLICIES, POLICY_GROUPS, SOURCE_DETAILS, SOURCE_META } from '../data/demo';
 import { loadScraps, saveScraps } from './storage';
 
 // 보관함에서 사용자가 바꾼 내용(삭제 · 폴더 이동)은 localStorage에 저장해 새로고침 후에도 유지합니다.
@@ -15,12 +15,11 @@ function write(key, value) {
   window.dispatchEvent(new Event('cast:archive-change'));
 }
 
-// 스크랩 자료와 기본 시연 자료를 합친 뒤, 삭제·폴더 이동을 반영한 목록
+// 리서치에서 참고해 자동 저장된 출처 문서 목록 (삭제·폴더 이동 반영). 스크랩한 문장은 loadScraps()로 따로 봅니다.
 export function loadArchive() {
-  const scraps = loadScraps();
   const removed = read(KEYS.removed, []);
   const moves = read(KEYS.folders, {});
-  return [...scraps, ...ARCHIVE_SOURCES.filter(s => !scraps.some(e => e.id === s.id))]
+  return ARCHIVE_SOURCES
     .filter(s => !removed.includes(s.id))
     .map(s => moves[s.id] ? { ...s, folder: moves[s.id] } : s);
 }
@@ -32,11 +31,13 @@ export function moveToFolder(ids, folder) {
 }
 
 export function removeSources(ids) {
-  const scraps = loadScraps();
-  const scrapIds = scraps.map(s => s.id);
-  saveScraps(scraps.filter(s => !ids.includes(s.id)));
-  write(KEYS.removed, [...new Set([...read(KEYS.removed, []), ...ids.filter(id => !scrapIds.includes(id))])]);
+  write(KEYS.removed, [...new Set([...read(KEYS.removed, []), ...ids])]);
 }
+
+// 스크랩한 원문: 특정 문서에서 스크랩한 것 / 스크랩 해제
+export function scrapsOf(sourceId) { return loadScraps().filter(q => q.sourceId === sourceId); }
+export function removeScrap(id) { saveScraps(loadScraps().filter(q => q.id !== id)); }
+export function scrapText(q) { return `“${q.quote}” — ${q.sourceTitle}${q.publisher ? ', ' + q.publisher : ''}`; }
 
 export function isRecent(date) {
   const cutoff = new Date(Date.now() - RECENT_DAYS * 864e5);
@@ -57,22 +58,11 @@ export function policyVersion(id) {
   return { group: p.group, versions, currentId, isCurrent: currentId === id };
 }
 
-// 출처 상세 화면에 보여줄 요약 · 저장한 문장 · 근거로 쓴 주장 · 발행 정보. linked는 앱 안에 해당 리서치 화면이 있는지 여부
+// 출처 상세 화면에 보여줄 자동 요약 · 핵심 문장 · 근거로 쓴 주장 · 발행 정보. linked는 앱 안에 해당 리서치 화면이 있는지 여부
 export function sourceDetail(s) {
-  const d = POLICIES[s.id] || SOURCE_DETAILS[s.id];
+  const d = POLICIES[s.id] || SOURCE_DETAILS[s.id] || { summary: '요약을 준비하고 있어요.', claims: [], research: '' };
   const meta = SOURCE_META[s.id] || {};
-  if (d) return { summary: d.summary, quote: d.quote, research: d.research, claims: d.claims, linked: d.research === DEFAULT_TITLE, publisher: meta.publisher || s.domain, published: meta.published, reasons: meta.reasons || [], cautions: meta.cautions || [] };
-  // 리서치 결과 화면에서 스크랩한 근거
-  const claim = CLAIMS.find(c => c.id === s.id);
-  return {
-    summary: claim ? claim.analysis : '리서치 중 스크랩한 근거예요.',
-    quote: s.quote || claim?.quote,
-    research: DEFAULT_TITLE,
-    claims: claim ? [{ text: claim.title, status: claim.status, tone: claim.tone, reason: claim.analysis }] : [],
-    linked: true,
-    publisher: claim?.publisher || s.domain, published: null,
-    reasons: ['리서치 중 직접 스크랩한 근거'], cautions: [],
-  };
+  return { summary: d.summary, quote: d.quote, research: d.research, claims: d.claims, linked: d.research === DEFAULT_TITLE, publisher: meta.publisher || s.domain, published: meta.published, reasons: meta.reasons || [], cautions: meta.cautions || [] };
 }
 
 // 같은 리서치에서 함께 저장한 다른 출처 (다시 볼 때 같이 보던 자료를 찾기 위함)

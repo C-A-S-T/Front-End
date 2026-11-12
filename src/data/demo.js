@@ -4,33 +4,39 @@ export const DEFAULT_TITLE = '2026 서울 거주 청년 월세 지원';
 // 이 데이터는 UI 시연을 위한 가상 예시입니다. 실제 정책·행정 정보가 아닙니다.
 export const CLAIMS = [
   {
-    id: 1, title: '지원 대상은 만 19~34세 무주택 청년이다.',
+    id: 1, topic: '지원 대상', highlight: '만 19~34세 무주택 청년', title: '지원 대상은 만 19~34세 무주택 청년이다.',
     detail: '나이·주택 보유 조건이 근거와 일치합니다.', status: '근거 확인', tone: 'success',
     sourceName: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터',
     quote: '지원 대상은 만 19~34세 무주택 청년으로 한다.',
     analysis: '나이 및 주택 보유 조건이 검색된 가상 근거 문서와 일치합니다.',
   },
   {
-    id: 2, title: '지원금은 월 30만 원이다.',
+    id: 2, topic: '지원 금액', highlight: '월 20만 원', compare: { ai: '월 30만 원', source: '월 20만 원' }, title: '지원금은 월 30만 원이다.',
     detail: 'AI 답변 30만 원 ↔ 원문 20만 원', status: '근거와 충돌', tone: 'danger',
     sourceName: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터',
     quote: '지원 대상자에게 월 20만 원을 최대 12개월 동안 지원한다.',
     analysis: "AI 답변의 '월 30만 원'과 가상 근거의 '월 20만 원'이 서로 달라 금액 정보에 충돌이 있습니다.",
   },
   {
-    id: 3, title: '신청기간은 2026년 11월 1일~30일이다.',
+    id: 3, topic: '신청 기간', highlight: '2026년 11월 1일부터', title: '신청기간은 2026년 11월 1일~30일이다.',
     detail: '신청 시작일만 확인, 종료일 근거 미확인', status: '부분 확인', tone: 'warning',
     sourceName: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터',
     quote: '사업 신청은 2026년 11월 1일부터 접수한다.',
     analysis: '시작일은 확인되지만 종료일인 11월 30일의 명시적 근거는 발견되지 않았습니다.',
   },
   {
-    id: 4, title: '신청은 온라인에서 가능하다.',
+    id: 4, topic: '신청 방식', highlight: '별도 안내에 따른다', title: '신청은 온라인에서 가능하다.',
     detail: '온라인 신청 방식에 관한 명시적 근거 없음', status: '근거 부족', tone: 'muted',
     sourceName: '가상 시청 복지정책 자료집', publisher: '가상 시청',
     quote: '접수 방식은 별도 안내에 따른다.',
     analysis: '검색된 가상 문서에 온라인 신청 방식에 관한 직접적인 근거가 없습니다.',
   },
+];
+
+// AI 답변 문장. 숫자는 그 부분이 어떤 주장(CLAIMS id)인지를 뜻합니다. (결과 화면에서 누르면 근거 원문이 그 주장으로 바뀜)
+export const ANSWER_PARTS = [
+  '가상 A 청년월세지원 사업은 ', [1, '만 19~34세 무주택 청년'], '을 대상으로 ', [2, '월 30만 원을 지원'], '합니다. 신청은 ',
+  [3, '2026년 11월 1일부터 30일까지'], ' 받으며, ', [4, '온라인으로 신청할 수 있습니다'], '.',
 ];
 
 export const ARCHIVE_SOURCES = [
@@ -44,6 +50,8 @@ export const ARCHIVE_SOURCES = [
   { id:'s8', title:'가상 A 청년월세지원 사업 공고문', domain:'가상 청년지원센터', type:'정부자료', date:'2026.10.01', trust:'높음', folder:'청약·주거' },
   { id:'s9', title:'2025 가상 A 청년월세지원 사업 공고문', domain:'가상 청년지원센터', type:'정부자료', date:'2025.03.05', trust:'높음', folder:'청약·주거' },
   { id:'s10', title:'2024 가상 A 청년월세지원 사업 공고문', domain:'가상 청년지원센터', type:'정부자료', date:'2024.03.06', trust:'높음', folder:'청약·주거' },
+  { id:'s12', title:'가상 B 학자금 이자지원 사업 안내', domain:'가상 장학재단', type:'정부자료', date:'2026.09.15', trust:'높음', folder:'교육' },
+  { id:'s11', title:'2025 가상 B 학자금 이자지원 사업 안내', domain:'가상 장학재단', type:'정부자료', date:'2025.02.20', trust:'높음', folder:'교육' },
 ];
 
 export const STEPS = [
@@ -58,6 +66,7 @@ export const STEPS = [
 // 같은 정책의 연도별 버전. 오래된 순서로 두고 마지막 항목을 현재 시행 중인 정책으로 봅니다. (가상 예시)
 export const POLICY_GROUPS = {
   'youth-rent': { name: '가상 A 청년월세지원 사업', versions: ['s10', 's9', 's8'] },
+  'student-loan': { name: '가상 B 학자금 이자지원 사업', versions: ['s11', 's12'] },
 };
 
 // 정책 비교에 쓰는 항목 순서
@@ -100,6 +109,28 @@ export const POLICIES = {
     quote: '지원 대상은 만 19~34세 무주택 청년으로 한다. 지원 대상자에게 월 20만 원을 최대 12개월 동안 지원한다.',
     research: '2026 서울 거주 청년 월세 지원',
     claims: CLAIMS.map(c => ({ text: c.title, status: c.status, tone: c.tone, reason: c.analysis })),
+  },
+  s11: {
+    group: 'student-loan', version: '2025년판', effective: '2025.03.01 ~ 2025.12.31',
+    summary: '대학 재학생의 학자금 대출 이자를 재학 기간 동안 전액 지원하는 사업입니다. 학자금 지원구간 8구간 이하가 대상입니다.',
+    fields: { target: '대학 재학생 (만 35세 이하)', income: '학자금 지원구간 8구간 이하', amount: '대출 이자 전액', duration: '재학 기간 중', applyPeriod: '2025.03.04 ~ 2025.04.30', method: '온라인 신청' },
+    quote: '학자금 지원구간 8구간 이하 재학생의 대출 이자를 재학 기간 동안 전액 지원한다.',
+    research: '학자금 대출 이자 지원 조건',
+    claims: [
+      { text: '학자금 지원구간 8구간 이하만 지원받을 수 있다.', status: '근거 확인', tone: 'success', field: 'income', reason: '안내문의 지원 대상 항목에 8구간 이하로 명시되어 있습니다.' },
+      { text: '졸업하면 이자 지원이 끝난다.', status: '근거 확인', tone: 'success', field: 'duration', reason: '지원 기간이 재학 기간 중으로 한정되어 있습니다.' },
+      { text: '신청은 온라인으로만 가능하다.', status: '근거 확인', tone: 'success', field: 'method', reason: '신청 방법 항목에 온라인 신청만 안내되어 있습니다.' },
+    ],
+  },
+  s12: {
+    group: 'student-loan', version: '2026년판', effective: '2026.10.01 시행',
+    summary: '지원 대상을 학자금 지원구간 9구간까지 넓히고, 졸업 후 2년까지 이자 지원을 이어 가도록 바꿨습니다.',
+    fields: { target: '대학 재학생 (만 35세 이하)', income: '학자금 지원구간 9구간 이하', amount: '대출 이자 전액', duration: '재학 기간 + 졸업 후 2년', applyPeriod: '2026.09.20 ~ 2026.10.31', method: '온라인 신청' },
+    quote: '졸업 후 2년까지 대출 이자 지원을 연장한다.',
+    research: '학자금 대출 이자 지원 조건',
+    claims: [
+      { text: '졸업 후에도 2년간 이자를 지원받는다.', status: '근거 확인', tone: 'success', field: 'duration', reason: '2026년 안내문에 졸업 후 2년 연장이 명시되어 있습니다.' },
+    ],
   },
 };
 
@@ -177,7 +208,29 @@ export const SOURCE_META = {
   s5: { publisher: '학술지 게재 논문', published: '2025.06.10', reasons: ['동료 심사를 거친 학술 논문'] },
   s6: { publisher: '언론 보도', published: '2026.10.03', reasons: ['최근 보도'], cautions: ['기업 자체 발표 인용 위주', '공식 자료로 교차 확인 필요'] },
   s7: { publisher: '무역 관련 기관', published: '2026.04.21', reasons: ['공공기관 발행 자료'], cautions: ['구체적 근거 데이터 부족'] },
-  s8: { publisher: '가상 청년지원센터', published: '2026.10.01', reasons: ['사업 주관 기관의 공식 공고문', '현재 시행 중인 버전'] },
+  s8: { publisher: '가상 청년지원센터', published: '2026.10.01', reasons: ['사업 주관 기관의 공식 공고문', '가장 최근 버전'] },
   s9: { publisher: '가상 청년지원센터', published: '2025.02.14', reasons: ['사업 주관 기관의 공식 공고문'], cautions: ['현재는 시행이 끝난 지난 정책'] },
+  s11: { publisher: '가상 장학재단', published: '2025.02.17', reasons: ['사업 주관 기관의 공식 안내문'], cautions: ['현재는 시행이 끝난 지난 정책'] },
+  s12: { publisher: '가상 장학재단', published: '2026.09.12', reasons: ['사업 주관 기관의 공식 안내문', '가장 최근 버전'] },
   s10: { publisher: '가상 청년지원센터', published: '2024.02.15', reasons: ['사업 주관 기관의 공식 공고문'], cautions: ['현재는 시행이 끝난 지난 정책'] },
 };
+
+// 사용자가 리서치 결과 화면에서 직접 스크랩한 원문 문장 (문서와 별개로 모아 봄). 처음 실행 시 보여줄 가상 예시입니다.
+// sourceId: 보관함의 출처 문서 id (없으면 null) · claimId: 현재 리서치 화면의 주장 id (다른 리서치면 null)
+export const DEMO_SCRAPS = [
+  { id: 'q2', claimId: 2, sourceId: 's8', sourceTitle: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터', quote: CLAIMS[1].quote, claim: CLAIMS[1].title, status: CLAIMS[1].status, tone: CLAIMS[1].tone, research: DEFAULT_TITLE, date: '2026.10.20' },
+  { id: 'd1', claimId: null, sourceId: 's1', sourceTitle: '2026년 청년 주거지원 정책 개편안', publisher: '국토교통부', quote: '청년 월세 지원 대상 연령을 만 34세까지 확대하는 방안을 추진한다.', claim: '월세 지원 대상 연령이 만 34세까지 확대된다.', status: '근거 확인', tone: 'success', research: DEFAULT_TITLE, date: '2026.10.14' },
+  { id: 'd2', claimId: null, sourceId: 's3', sourceTitle: '비타민D와 면역력에 관한 연구', publisher: '학술지 게재 논문', quote: '비타민D 결핍군에서 호흡기 감염 발생률이 상대적으로 높게 나타났다.', claim: '비타민D를 먹으면 감기를 예방할 수 있다.', status: '근거와 충돌', tone: 'danger', research: '비타민D 효과 검증', date: '2026.10.10' },
+  { id: 'd3', claimId: null, sourceId: 's6', sourceTitle: 'AI 관련 글로벌 기업 동향', publisher: '언론 보도', quote: '주요 기업들이 AI 인프라 투자 계획을 잇달아 발표했다.', claim: '주요 기업들이 AI 인프라 투자를 늘리고 있다.', status: '근거 확인', tone: 'success', research: 'AI 반도체 산업 전망 정리', date: '2026.10.04' },
+  { id: 'd4', claimId: null, sourceId: 's9', sourceTitle: '2025 가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터', quote: '지원 대상은 만 19~29세 무주택 청년으로 하며, 월 20만 원을 최대 10개월 동안 지원한다.', claim: '지원 대상은 만 19~29세 무주택 청년이다.', status: '근거 확인', tone: 'success', research: '2025 청년 월세 지원 조건 정리', date: '2025.03.05' },
+  { id: 'd5', claimId: null, sourceId: 's8', sourceTitle: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터', quote: '지원 대상은 만 19~34세 무주택 청년으로 한다.', claim: '지원 대상은 만 19~34세 무주택 청년이다.', status: '근거 확인', tone: 'success', research: DEFAULT_TITLE, date: '2026.10.20' },
+  { id: 'd6', claimId: null, sourceId: 's8', sourceTitle: '가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터', quote: '사업 신청은 2026년 11월 1일부터 접수한다.', claim: '신청기간은 2026년 11월 1일~30일이다.', status: '부분 확인', tone: 'warning', research: DEFAULT_TITLE, date: '2026.10.20' },
+  { id: 'd7', claimId: null, sourceId: 's2', sourceTitle: 'AI 반도체 시장 동향 보고서', publisher: '산업연구원', quote: '데이터센터용 AI 가속기 수요가 반도체 시장 성장을 견인하고 있다.', claim: 'AI 가속기 수요가 반도체 시장 성장을 이끌고 있다.', status: '근거 확인', tone: 'success', research: 'AI 반도체 산업 전망 정리', date: '2026.10.12' },
+  { id: 'd8', claimId: null, sourceId: 's4', sourceTitle: '대학생 등록금 현황 통계', publisher: '국가통계포털', quote: '사립대학의 연평균 등록금은 국공립대학보다 높은 수준을 유지하고 있다.', claim: '사립대 등록금이 국공립대보다 높다.', status: '근거 확인', tone: 'success', research: '대학 등록금 부담 비교', date: '2026.10.08' },
+  { id: 'd9', claimId: null, sourceId: 's5', sourceTitle: '기후변화가 농업 생산성에 미치는 영향', publisher: '학술지 게재 논문', quote: '기온 상승은 지역과 작물에 따라 생산성에 서로 다른 영향을 미친다.', claim: '기후변화는 작물마다 다른 영향을 준다.', status: '근거 확인', tone: 'success', research: '기후변화와 식량 생산', date: '2026.10.06' },
+  { id: 'd10', claimId: null, sourceId: 's10', sourceTitle: '2024 가상 A 청년월세지원 사업 공고문', publisher: '가상 청년지원센터', quote: '지원 대상자에게 월 15만 원을 최대 10개월 동안 지원한다.', claim: '지원금은 월 15만 원이다.', status: '근거 확인', tone: 'success', research: '2024 청년 월세 지원 조건 정리', date: '2024.03.06' },
+  { id: 'd11', claimId: null, sourceId: 's7', sourceTitle: '한국 초전연구 추출 동향', publisher: '무역 관련 기관', quote: '연구 성과 데이터의 체계적 수집과 공유가 필요하다.', claim: '연구 성과 데이터 공유 체계가 필요하다.', status: '부분 확인', tone: 'warning', research: '연구 동향 조사', date: '2026.10.02' },
+  { id: 'd12', claimId: null, sourceId: 's1', sourceTitle: '2026년 청년 주거지원 정책 개편안', publisher: '국토교통부', quote: '전세대출 이자 지원 한도 상향을 검토한다.', claim: '전세대출 이자 지원 한도가 상향된다.', status: '부분 확인', tone: 'warning', research: DEFAULT_TITLE, date: '2026.10.14' },
+  { id: 'd13', claimId: null, sourceId: 's3', sourceTitle: '비타민D와 면역력에 관한 연구', publisher: '학술지 게재 논문', quote: '보충제 섭취와 감염 예방 사이의 인과관계는 이번 연구에서 확인되지 않았다.', claim: '비타민D를 먹으면 감기를 예방할 수 있다.', status: '근거와 충돌', tone: 'danger', research: '비타민D 효과 검증', date: '2026.10.10' },
+  { id: 'd14', claimId: null, sourceId: 's2', sourceTitle: 'AI 반도체 시장 동향 보고서', publisher: '산업연구원', quote: '국내 기업별 시장 점유율은 본 보고서의 분석 범위에 포함하지 않았다.', claim: '국내 기업의 시장 점유율이 50%를 넘는다.', status: '근거 부족', tone: 'muted', research: 'AI 반도체 산업 전망 정리', date: '2026.10.12' },
+];

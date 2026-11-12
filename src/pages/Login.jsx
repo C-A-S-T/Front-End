@@ -10,8 +10,7 @@ export default function Login(){
     if(!/^\S+@\S+\.\S+$/.test(email)){setError('올바른 이메일 주소를 입력해 주세요.');return;}
     if(!password.trim()){setError('비밀번호를 입력해 주세요.');return;}
     // 데모: 인증 서버가 연결되지 않아 임의 이메일/비밀번호로 이동만 시연합니다.
-    sessionStorage.setItem('cast-demo-session','true');
-    if(remember)localStorage.setItem('cast-demo-remember','true');
+    sessionStorage.setItem('cast-demo-session','true');    if(remember)localStorage.setItem('cast-demo-remember','true');
     setError('');nav('/research');
   }
   return <AuthLayout step={1}>
